@@ -1,10 +1,19 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 const AddBlogForm = (props) => {
-    const { addBlog, setNewBlog} = props
+    const { addBlog } = props
+    const [newBlog, setNewBlog] = useState({})
+
     const blog = {}
+    const createBlog = (event) => {
+        
+        addBlog(newBlog)
+        
+        setNewBlog({})
+    }
+
     return (
-        <form onSubmit={addBlog}>
+        <form onSubmit={createBlog}>
             <div>
                 Title:
                 <input 

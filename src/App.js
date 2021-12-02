@@ -13,7 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState({})
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -54,14 +53,12 @@ const App = () => {
   }
   
   const addBlogFormRef = useRef()
-  const addBlog = async (event) => {
-    event.preventDefault()
-    
+  const addBlog = async (blog) => {
     addBlogFormRef.current.toggleVisibility()
-    await blogService.create(newBlog)
+    await blogService.create(blog)
     const blogs = await blogService.getAll()
     setBlogs(blogs) 
-    setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+    setNotification(`a new blog ${blog.title} by ${blog.author} added`)
     setTimeout(() => {
       setNotification(null)
     }, 5000)
@@ -93,7 +90,6 @@ const App = () => {
           <Toggable buttonLabel="new blog" ref={addBlogFormRef}>
           <AddBlogForm
           addBlog={addBlog}
-          setNewBlog={setNewBlog}
           />
           </Toggable>
           {blogs.map(blog => <Blog key={blog.id} blog={blog} />)} </>
