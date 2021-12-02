@@ -8,7 +8,7 @@ import AddBlogForm from './components/AddBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -45,9 +45,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setNotification('Wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
     }
   }
@@ -58,6 +58,10 @@ const App = () => {
     await blogService.create(newBlog)
     const blogs = await blogService.getAll()
     setBlogs(blogs) 
+    setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
   
   const handleLogout = () => {
@@ -68,7 +72,7 @@ const App = () => {
   return (
       <div>
         <h2>blogs</h2>
-        <Error message={errorMessage} />
+        <Error message={notification} />
         {user === null ?
           <LoginForm 
           handleLogin={handleLogin}
