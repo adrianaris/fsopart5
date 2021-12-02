@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Error from './components/Error'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import AddBlogForm from './components/AddBlogForm'
+import Toggable from './components/Toggable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -52,9 +53,11 @@ const App = () => {
     }
   }
   
+  const addBlogFormRef = useRef()
   const addBlog = async (event) => {
     event.preventDefault()
     
+    addBlogFormRef.current.toggleVisibility()
     await blogService.create(newBlog)
     const blogs = await blogService.getAll()
     setBlogs(blogs) 
@@ -68,7 +71,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
-
+  
   return (
       <div>
         <h2>blogs</h2>
@@ -87,10 +90,12 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </h4>
           <h2>create new</h2>
+          <Toggable buttonLabel="new blog" ref={addBlogFormRef}>
           <AddBlogForm
           addBlog={addBlog}
           setNewBlog={setNewBlog}
           />
+          </Toggable>
           {blogs.map(blog => <Blog key={blog.id} blog={blog} />)} </>
         }
       </div>
