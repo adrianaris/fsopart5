@@ -53,10 +53,14 @@ const App = () => {
   }
   
   const addBlogFormRef = useRef()
+
   const addBlog = async (blog) => {
     addBlogFormRef.current.toggleVisibility()
+
     await blogService.create(blog)
+
     const blogs = await blogService.getAll()
+
     setBlogs(blogs) 
     setNotification(`a new blog ${blog.title} by ${blog.author} added`)
     setTimeout(() => {
@@ -70,31 +74,32 @@ const App = () => {
   }
   
   return (
-      <div>
-        <h2>blogs</h2>
-        <Error message={notification} />
-        {user === null ?
+    <div>
+      <h2>blogs</h2>
+      <Error message={notification} />
+      {user === null ?
           <LoginForm 
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          setPassword={setPassword}
-          setUsername={setUsername}
-        /> :
+            handleLogin={handleLogin}
+            username={username}
+            password={password}
+            setPassword={setPassword}
+            setUsername={setUsername}
+          /> :
         <> 
           
           <h4>{user.name} logged-in 
             <button onClick={handleLogout}>logout</button>
           </h4>
-          <h2>create new</h2>
           <Toggable buttonLabel="new blog" ref={addBlogFormRef}>
-          <AddBlogForm
-          addBlog={addBlog}
-          />
+            <h2>create new</h2>
+            <AddBlogForm
+              addBlog={addBlog}
+            />
           </Toggable>
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} />)} </>
-        }
-      </div>
+          {blogs.map(blog => <Blog key={blog.id} blog={blog} />)} 
+        </>
+      }
+    </div>
   )
 }
 
