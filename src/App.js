@@ -57,7 +57,7 @@ const App = () => {
   const addBlog = async (blog) => {
     addBlogFormRef.current.toggleVisibility()
 
-    await blogService.create(blog)
+    await blogService.createBlog(blog)
 
     const blogs = await blogService.getAll()
 
@@ -74,9 +74,22 @@ const App = () => {
   }
   
   const updBLog = async (id, newBlog) => {
-    await blogService.update(id, newBlog)
+    await blogService.updateBlog(id, newBlog)
     setBlogs(blogs.map(b => b.id !== id ? b : newBlog))
   } 
+  
+  const delBlog = async (blog) => {
+    const deletedBlog = `blog ${blog.title} by ${blog.author} has been deleted`
+    await blogService.deleteBlog(blog.id)
+    
+    const blogs = await blogService.getAll()
+    
+    setBlogs(blogs)
+    setNotification(`${deletedBlog}`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
   
   return (
     <div>
@@ -91,7 +104,6 @@ const App = () => {
             setUsername={setUsername}
           /> :
         <> 
-          
           <h4>{user.name} logged-in 
             <button onClick={handleLogout}>logout</button>
           </h4>
@@ -101,10 +113,15 @@ const App = () => {
               addBlog={addBlog}
             />
           </Toggable>
-          {blogs.map(blog => <Blog 
-                             key={blog.id} 
-                             blog={blog} 
-                             addLike={(id, newBlog) => updBLog(id, newBlog)}/>)} 
+          {blogs.map(blog => 
+            <Blog 
+              key={blog.id} 
+              blog={blog} 
+              addLike={(id, newBlog) => updBLog(id, newBlog)}
+              user={user}
+              handleDeleteBlog={() => delBlog(blog)}
+            />
+          )} 
         </>
       }
     </div>
