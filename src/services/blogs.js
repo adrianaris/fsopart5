@@ -16,9 +16,10 @@ const create = async newObject => {
   return response.data
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  const sorted = response.data.sort((a, b) => (a.likes > b.likes) ? 1 : -1)
+  return sorted
 }
 
 const update = (id, newObject) => {
