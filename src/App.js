@@ -73,6 +73,11 @@ const App = () => {
     setUser(null)
   }
   
+  const updBLog = async (id, newBlog) => {
+    await blogService.update(id, newBlog)
+    setBlogs(blogs.map(b => b.id !== id ? b : newBlog))
+  } 
+  
   return (
     <div>
       <h2>blogs</h2>
@@ -96,7 +101,10 @@ const App = () => {
               addBlog={addBlog}
             />
           </Toggable>
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} />)} 
+          {blogs.map(blog => <Blog 
+                             key={blog.id} 
+                             blog={blog} 
+                             addLike={(id, newBlog) => updBLog(id, newBlog)}/>)} 
         </>
       }
     </div>
