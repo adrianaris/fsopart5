@@ -17,9 +17,9 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
-  
+
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedBlogUser')
     if(loggedUser) {
@@ -28,10 +28,10 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  
+
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -51,60 +51,67 @@ const App = () => {
       }, 5000)
     }
   }
-  
+
   const addBlogFormRef = useRef()
 
   const addBlog = async (blog) => {
     addBlogFormRef.current.toggleVisibility()
 
-    await blogService.createBlog(blog)
+    try {
+      await blogService.createBlog(blog)
+    } catch (error) {
+      setNotification(`${error}`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
 
     const blogs = await blogService.getAll()
 
-    setBlogs(blogs) 
+    await setBlogs(blogs)
     setNotification(`a new blog ${blog.title} by ${blog.author} added`)
     setTimeout(() => {
       setNotification(null)
     }, 5000)
   }
-  
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
-  
+
   const updBLog = async (id, newBlog) => {
     await blogService.updateBlog(id, newBlog)
     setBlogs(blogs.map(b => b.id !== id ? b : newBlog))
-  } 
-  
+  }
+
   const delBlog = async (blog) => {
     const deletedBlog = `blog ${blog.title} by ${blog.author} has been deleted`
     await blogService.deleteBlog(blog.id)
-    
+
     const blogs = await blogService.getAll()
-    
+
     setBlogs(blogs)
     setNotification(`${deletedBlog}`)
     setTimeout(() => {
       setNotification(null)
     }, 5000)
   }
-  
+
   return (
     <div>
       <h2>blogs</h2>
       <Error message={notification} />
       {user === null ?
-          <LoginForm 
-            handleLogin={handleLogin}
-            username={username}
-            password={password}
-            setPassword={setPassword}
-            setUsername={setUsername}
-          /> :
-        <> 
-          <h4>{user.name} logged-in 
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setPassword={setPassword}
+          setUsername={setUsername}
+        /> :
+        <>
+          <h4>{user.name} logged-in
             <button onClick={handleLogout}>logout</button>
           </h4>
           <Toggable buttonLabel="new blog" ref={addBlogFormRef}>
@@ -113,15 +120,15 @@ const App = () => {
               addBlog={addBlog}
             />
           </Toggable>
-          {blogs.map(blog => 
-            <Blog 
-              key={blog.id} 
-              blog={blog} 
+          {blogs.map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
               addLike={(id, newBlog) => updBLog(id, newBlog)}
               user={user}
               handleDeleteBlog={() => delBlog(blog)}
             />
-          )} 
+          )}
         </>
       }
     </div>
