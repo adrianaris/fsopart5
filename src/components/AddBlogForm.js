@@ -1,16 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const AddBlogForm = (props) => {
   const { addBlog } = props
-  const [newBlog, setNewBlog] = useState({})
 
   const blog = {}
   const createBlog = (event) => {
     event.preventDefault()
 
-    addBlog(newBlog)
-
-    setNewBlog({})
+    addBlog(blog)
   }
 
   return (
@@ -45,7 +42,7 @@ const AddBlogForm = (props) => {
             onChange={({ target }) => blog.url = target.value}
           />
         </div>
-        <button type="submit" onClick={() => setNewBlog(blog)}>Add Blog</button>
+        <button type="submit">Add Blog</button>
       </form>
     </div>
   )
