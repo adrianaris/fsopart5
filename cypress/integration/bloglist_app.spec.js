@@ -64,6 +64,31 @@ describe('Bloglist app', function() {
                   .contains('view').click()
                 cy.contains('like').click()
                 cy.contains('1')
+                cy.get('html').should('contain', 'remove')
+            })
+            
+            it('the blog can be deleted', function () {
+                cy.contains('cypress preexisting blog CypressHill')
+                  .contains('view').click()
+                cy.contains('remove').click()
+                cy.get('html').should('not.contain', 'cypress preexisting blog CypressHill')
+            })
+            
+            it.only('the blog can not be deleted by different user', function() {
+                cy.contains('logout').click()
+
+                const diffUser = {
+                    name: 'Luminita Serbanescu',
+                    username: 'lumigoo',
+                    password: 'parola'
+                }
+                
+                cy.request('POST', 'http://localhost:3003/api/users', diffUser)
+                cy.login({ username: 'lumigoo', password: 'parola' })
+                
+                cy.contains('cypress preexisting blog CypressHill')
+                  .contains('view').click()
+                cy.get('.removeButton').should('not.exist')
             })
         })
     })
