@@ -26,14 +26,13 @@ const Blog = ({ blog, addLike, user, handleDeleteBlog }) => {
   const removeButtonStyle = { display: blog.user.name === user.name ? '' : 'none' }
 
   return (
-    <div style={blogStyle}>
-      <div style={hideDisplay}>
+    <div style={blogStyle} className='blog'>
+      <div>
         {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>view</button>
+        <button onClick={toggleVisibility} style={hideDisplay}>view</button>
+        <button onClick={toggleVisibility} style={showDisplay}>hide</button>
       </div>
-      <div style={showDisplay}>
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>hide</button>
+      <div style={showDisplay} className="hiddenContent">
         <div>
           {blog.url}
         </div>
