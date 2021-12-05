@@ -23,7 +23,6 @@ const Blog = ({ blog, addLike, user, handleDeleteBlog }) => {
     marginBottom: 5
   }
 
-  const removeButtonStyle = { display: blog.user.name === user.name ? '' : 'none' }
 
   return (
     <div style={blogStyle} className='blog'>
@@ -32,7 +31,7 @@ const Blog = ({ blog, addLike, user, handleDeleteBlog }) => {
         <button onClick={toggleVisibility} style={hideDisplay}>view</button>
         <button onClick={toggleVisibility} style={showDisplay}>hide</button>
       </div>
-      <div style={showDisplay} className="hiddenContent">
+      <div style={showDisplay}>
         <div>
           {blog.url}
         </div>
@@ -45,9 +44,11 @@ const Blog = ({ blog, addLike, user, handleDeleteBlog }) => {
           <div>
             {blog.user.name}
           </div>
-          <button style={removeButtonStyle} onClick={handleDeleteBlog}>
+          {(blog.user.name === user.name) &&
+          <button onClick={handleDeleteBlog}>
         remove
           </button>
+          }
         </>
         }
       </div>
