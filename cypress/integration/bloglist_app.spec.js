@@ -64,7 +64,6 @@ describe('Bloglist app', function() {
                   .contains('view').click()
                 cy.contains('like').click()
                 cy.contains('1')
-                cy.get('html').should('contain', 'remove')
             })
             
             it('the blog can be deleted', function () {
@@ -74,7 +73,7 @@ describe('Bloglist app', function() {
                 cy.get('html').should('not.contain', 'cypress preexisting blog CypressHill')
             })
             
-            it.only('the blog can not be deleted by different user', function() {
+            it('the blog can not be deleted by different user', function() {
                 cy.contains('logout').click()
 
                 const diffUser = {
@@ -89,6 +88,35 @@ describe('Bloglist app', function() {
                 cy.contains('cypress preexisting blog CypressHill')
                   .contains('view').click()
                 cy.get('.removeButton').should('not.exist')
+            })
+            
+            it.only('the blogs are ordered by likes descending', function() {
+               cy.addBlog({
+                   title: 'most likes',
+                   author: 'CypressHill',
+                   url: 'adrianserbanescu.com',
+                   likes: 4
+               }) 
+               cy.addBlog({
+                   title: 'title',
+                   author: 'author',
+                   url: 'adrianserbanescu.com',
+                   likes: 2
+               })
+              
+               cy.get('.viewButton').click({ multiple: true })
+               cy.get('.likesCounter').invoke('text').then(like => {
+                   const sorted = (arr) => {
+                       for(let i = 0; i < arr.length; i++) {
+                           let j = i + 1
+                           if(arr[j] > arr[i]) {
+                               return false
+                           }
+                           return true
+                       }
+                   } 
+                   expect(sorted(like)).to.eq(true)
+               })
             })
         })
     })

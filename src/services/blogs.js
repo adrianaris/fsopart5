@@ -18,7 +18,7 @@ const createBlog = async newObject => {
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)
-  const sorted = response.data.sort((a, b) => (a.likes > b.likes) ? 1 : -1)
+  const sorted = response.data.sort((a, b) => (a.likes > b.likes) ? -1 : 1)
   return sorted
 }
 

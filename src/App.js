@@ -82,7 +82,8 @@ const App = () => {
 
   const updBLog = async (id, newBlog) => {
     await blogService.updateBlog(id, newBlog)
-    setBlogs(blogs.map(b => b.id !== id ? b : newBlog))
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
   }
 
   const delBlog = async (blog) => {
